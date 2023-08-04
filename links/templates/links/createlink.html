@@ -1,0 +1,63 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Create Short Link for a Campaign</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1 class="h3 mb-4 text-gray-800">Create Short Link for a Campaign</h1>
+  {% if messages %}
+
+  <style type="text/css">
+      div.messages{
+          background-color: rgb(143, 12, 12);
+          color: #f7fff7 !important;
+      }
+      ul.messages{
+          list-style-type: none;
+      }
+
+      li{
+        font-size: 20px !important;
+      }
+  </style>
+  
+  <div class='messages'>
+  
+  <ul class="messages">
+  {% for message in messages %}
+  <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{% if "html_safe" in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}</li>
+  {% endfor %}
+  </ul>
+  
+  </div>
+  {% endif %}
+
+    <h4>{{ store.placename }}</h4>
+    <h5>{{ store.address }}</h5>
+    <h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+    <h6>You currently have <strong>{{store.total_links_remaining}}</strong> of <strong>{{store.total_links_limit}}</strong> short links remaining, which you can create.</h6>
+
+    <h5>Create Short Link:</h5>
+    <form action="{% url 'create-link' store.id %}" enctype="multipart/form-data" method="POST" onsubmit="myButton.disabled = true; return true;">
+    {% csrf_token %}
+    <div class="form-group">
+    <label for="my_long_url" >Link to shorten (make sure to include http:// or https:// at start of link):</label>
+    <input style="width: 100%;"type="url" placeholder="https://example.com/example/"id="my_long_url" name="my_long_url" required>
+    </div>
+
+    <div class="form-group">
+    <label for="short_name" >adva.co/</label>
+    <input type="text" placeholder="enter short name"id="short_name" name="short_name" maxlength="20" required>
+    <p>20 character limit for short name</p>
+    </div>
+
+    <input id="user_storeid" name="user_storeid" type="hidden" value="{{store.id}}">
+    <input name="myButton" type="submit" class="btn btn-primary" value="Create Short Link">
+    </form>
+
+</div>
+
+{% endblock %}

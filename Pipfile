@@ -1,0 +1,39 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+stripe = "*"
+pillow = "*"
+twilio = "*"
+requests = "*"
+phonenumbers = "*"
+django = "*"
+django-tz-detect = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
+gunicorn = "*"
+whitenoise = "*"
+gspread = "*"
+oauth2client = "*"
+pyopenssl = "*"
+django-heroku = "*"
+pandas = "*"
+xlrd = "*"
+django-crispy-forms = "*"
+django-twilio = "*"
+django-import-export = "*"
+redis = "*"
+future = "*"
+boto3 = "*"
+django-storages = "*"
+django-celery-beat = "*"
+sendgrid = "*"
+vonage = "*"
+django-simple-captcha = "*"
+
+[requires]
+python_version = "3.9"

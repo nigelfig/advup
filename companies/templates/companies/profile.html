@@ -1,0 +1,40 @@
+{% extends my_base %}
+{% block title %}
+<title>AdvantageUp | Profile</title>
+{% endblock %}
+{% block content %}
+<div class="container">
+<h1 class="h3 mb-4 text-gray-800">Profile</h1>
+<a class="btn btn-primary" href="{% url 'password_change' %}">Change Password</a>
+<br><br>
+<h2 class="h5 mb-4 text-gray-800">Update Profile</h2>
+{% include 'accounts/messages_setup.html' %}
+<form form action="{% url 'profile' %}" method="POST" onsubmit="myButton.disabled = true; return true;">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="inputComp">Company Name</label>
+    <input type="text" name="companyname" class="form-control" id="inputComp" value="{{profile.company_name}}">
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputFName">First Name</label>
+      <input type="text" name="firstname" class="form-control" id="inputFName" value="{{profile.first_name}}">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputLName">Last Name</label>
+      <input type="text" name="lastname" class="form-control" id="inputLName" value="{{profile.last_name}}">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPhoneNum">Phone Number</label>
+    <input type="tel" name="phonenum" class="form-control" id="inputPhoneNum" value="{{profile.phone_number}}">
+  </div>
+  <div class="form-group">
+    <label for="inputEmail4">Email (to update email please contact the AdvantageUp Support team)</label>
+    <input type="email" class="form-control" id="inputEmail4" value="{{request.user.email}}" readonly>
+  </div>
+
+  <button name="myButton" type="submit" class="btn btn-primary">Update Profile</button>
+</form>
+</div>
+{% endblock %}

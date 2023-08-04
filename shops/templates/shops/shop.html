@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{store.placename}} reviews | AdvantageUp</title>
+	<meta name="description" content="Recent reviews for {{store.placename}}, directions to {{store.placename}}, and store hours">
+	<meta name="keywords" content="{{store.placename}}, Feedback for {{store.placename}}, {{store.placename}} reviews, Text Marketing, SMS,SMS Marketing, sms, Reviews,Online Reviews,text messages,text messaging,small business,loyalty,feedback,grow business, chatbot">
+
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/4c2c084093.js" crossorigin="anonymous"></script>
+    <style>
+        /* Sticky footer styles
+        -------------------------------------------------- */
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+        body {
+            margin-bottom: 60px; /* Margin bottom by footer height */
+            background-color: #f8f9fc;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px; /* Set the fixed height of the footer here */
+            line-height: 60px; /* Vertically center the text there */
+            background-color: #f5f5f5;
+        }
+
+
+        /* Custom page CSS
+        -------------------------------------------------- */
+        /* Not required for template or sticky footer method. */
+
+
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-7">
+            <div>
+                <h2>{{store.placename}}</h2>
+                <p>{% if detail.store_category %}{{detail.store_category}} | {% endif %}{{store.address}}</p>
+                <p>{{detail.google_rating}}
+                    {% if detail.google_rating > 4.4 %} 
+                    <img src="{% static 'img/stars/five-stars.png' %}" width="75" alt="five star rating">
+                    {% elif detail.google_rating > 3.4 %} 
+                    <img src="{% static 'img/stars/four-stars.png' %}" width="75" alt="four star rating">
+                    {% elif detail.google_rating > 2.4 %} 
+                    <img src="{% static 'img/stars/three-stars.png' %}" width="75" alt="three star rating">
+                    {% elif detail.google_rating > 1.4 %} 
+                    <img src="{% static 'img/stars/two-stars.png' %}" width="75" alt="two star rating">
+                    {% elif detail.google_rating > 0.4 %} 
+                    <img src="{% static 'img/stars/one-star.png' %}" width="75" alt="one star rating">
+                    {% else %} 
+                    <img src="{% static 'img/stars/zero-stars.png' %}" width="75" alt="zero stars rating">
+                    {% endif %} 
+                     {{detail.google_reviews_total}} reviews</p>
+            </div>
+            <div class="py-2">
+                <a href="{% url 'recommend' slug %}" class="btn btn-primary btn-block">Write A Review</a>
+            </div>
+            <div class="m-0 py-4 px-3 bg-white">
+                <div class="pb-3">
+                    <p class="text-right"><a class="small" href="https://www.advantageup.com/">Powered by AdvantageUp.com</a></p>
+                    <h3>Recent Reviews</h3>
+                </div>
+                {% for review in reviews %}
+                <div class="py-2 d-inline-block">
+                    <img src="{{review.reviewer_photo_url}}" alt="" width="25"><span> {{review.reviewer_name}} <strong> on Google</strong></span>
+                    <br>
+                    {% if review.rating > 4 %} 
+                    <img src="{% static 'img/stars/five-stars.png' %}" width="60" alt="five star rating">
+                    {% elif review.rating > 3 %} 
+                    <img src="{% static 'img/stars/four-stars.png' %}" width="60" alt="four star rating">
+                    {% elif review.rating > 2 %} 
+                    <img src="{% static 'img/stars/three-stars.png' %}" width="60" alt="three star rating">
+                    {% elif review.rating > 1 %} 
+                    <img src="{% static 'img/stars/two-stars.png' %}" width="60" alt="two star rating">
+                    {% elif review.rating > 0 %} 
+                    <img src="{% static 'img/stars/one-star.png' %}" width="60" alt="one star rating">
+                    {% else %} 
+                    <img src="{% static 'img/stars/zero-stars.png' %}" width="60" alt="zero stars rating">
+                    {% endif %} 
+                    <span><em> {{review.relative_time_description}}</em></span>
+                </div>
+                <div>
+                    <p>{{review.review_text}}</p>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+
+
+
+
+        <!-- <div class="col-xs-1 col-md-1">.col-xs-6 .col-md-4</div> -->
+        <div class="col-xs-6 col-md-5 py-1">
+            <div class="bg-white p-5">
+                {% if detail.place_map %}
+                <div class="py-2">
+                    <img src="{{detail.place_map.url}}" alt="" style="width: 100%;">
+                </div>
+                {% endif %}
+                <div class="py-2"><i class="fas fa-map-marker-alt"></i> {{store.address}}</div>
+                {% if detail.formatted_store_number and detail.unformatted_store_number %}
+                <div class="py-2"><i class="fas fa-phone-alt"></i> <a href="tel:{{detail.unformatted_store_number}}">{{detail.formatted_store_number}}</a></div>
+                {% endif %}
+                <div class="py-2"><i class="fas fa-globe"></i> <a href="{{detail.website}}">{{detail.website}}</a></div>
+                {% if detail.store_category %}
+                <div class="py-2">
+                    <i class="fas fa-store"></i> {{detail.store_category}}
+                </div>
+                {% endif %}
+                <div class="py-2"><i class="far fa-clock"></i> Store Hours
+                <div class="container">
+                <div class="small">{{detail.hours_mon}}</div>
+                <div class="small">{{detail.hours_tue}}</div>
+                <div class="small">{{detail.hours_wed}}</div>
+                <div class="small">{{detail.hours_thu}}</div>
+                <div class="small">{{detail.hours_fri}}</div>
+                <div class="small">{{detail.hours_sat}}</div>
+                <div class="small">{{detail.hours_sun}}</div>
+                </div>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+    </div>
+
+
+    <footer class="footer">
+      <div class="container text-center">
+        <span class="text-center">Powered by <a href="https://www.advantageup.com/">AdvantageUp.com</a></span>
+      </div>
+    </footer>
+    
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

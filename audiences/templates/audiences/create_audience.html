@@ -1,0 +1,27 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Create an Audience</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1 class="h3 mb-4 text-gray-800">Create an Audience</h1>
+  {% include 'accounts/messages_setup.html' %}
+
+  <h4>{{ store.placename }}</h4>
+  <h5>{{ store.address }}</h5>
+  <h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+  <form class="user" action="{% url 'create_audience' store.id %}" enctype="multipart/form-data" method="POST" onsubmit="myButton.disabled = true; return true;">
+    {% csrf_token %}
+    <div class="form-group">
+      <input type="text" name="audience_name" maxlength="50" class="form-control form-control-user" id="audience" aria-describedby="emailHelp" placeholder="Enter Audience Name" required>
+    </div>
+    <input name="myButton" type="submit" class="btn btn-primary btn-block" value="Create Audience">
+  </form>
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,29 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Unsubscribe A Customer</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1 class="h3 mb-4 text-gray-800">Unsubscribe A Customer</h1>
+  {% include 'accounts/messages_setup.html' %}
+
+  <h4>{{ store.placename }}</h4>
+  <h5>{{ store.address }}</h5>
+  <h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+  <form class="user" action="{% url 'unsubscribe_customer' store.id %}" enctype="multipart/form-data" method="POST" onsubmit="myButton.disabled = true; return true;">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="phone_num_body">Enter Cell Number:</label>
+      <input type="tel" id="phone_num_body" name="phone_num_body" pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}" required>
+      <span>Format: 123-456-7890</span>
+    </div>
+    <input name="myButton" type="submit" class="btn btn-primary btn-block" value="Unsubscribe Customer">
+  </form>
+
+</div>
+
+{% endblock %}
+

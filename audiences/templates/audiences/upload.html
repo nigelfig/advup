@@ -1,0 +1,84 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Upload Subscribers</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1 class="h3 mb-4 text-gray-800">Upload Subscribers</h1>
+  {% if messages %}
+
+  <style type="text/css">
+      div.messages{
+          background-color: rgb(143, 12, 12);
+          color: #f7fff7 !important;
+      }
+      ul.messages{
+          list-style-type: none;
+      }
+
+      li{
+        font-size: 20px !important;
+      }
+  </style>
+  
+  <div class='messages'>
+  
+  <ul class="messages">
+  {% for message in messages %}
+  <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{% if "html_safe" in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %}</li>
+  {% endfor %}
+  </ul>
+  
+  </div>
+  {% endif %}
+  
+    <h4>{{ store.placename }}</h4>
+    <h5>{{ store.address }}</h5>
+    <h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+    <h6>You currently have <strong>{{store.monthly_sub_uploads}}</strong> cell phone number checks / uploads remaining for your current period. Your monthly cell phone number checks / uploads update to {{store.monthly_sub_uploads_limit}} on day {{update_day}} of the month.</h6>
+    <form class="user" action="{% url 'upload' store.id %}" enctype="multipart/form-data" method="POST" onsubmit="myButton.disabled = true; return true;">
+        {% csrf_token %}
+        <label>Audience</label>
+        <select id="your_audience" name="your_audience" required >
+            <option value=""></option>
+            {% for audience in audiences %}
+            <option value="{{audience.id}}">{{audience.audience_name}}</option>
+            {% endfor %}
+        </select>
+        <label>Cell Number Column</label>
+        <select id="phonenum" name="phonenum" required>
+            <option value=""></option>
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+        </select>
+    
+        <label>First Name Column</label>
+        <select id="fname" name="fname" >
+            <option value=""></option>
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+        </select>
+    
+        <label>Last Name Column</label>
+        <select id="lname" name="lname" >
+            <option value=""></option>
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+        </select>
+        <input id="store_id" name="store_id" type="hidden" value="{{store.id}}">
+        <input id="store_ctry" name="store_ctry" type="hidden" value="{{store.country}}">
+        <label>Upload a file</label>
+        <input type="file" name="file" required>
+        <p>Only accepts Excel files accepted (can be CSV, XLS, or XLSX format)</p>
+        <button name="myButton" class="btn btn-info" type="submit">Upload</button>
+    </form>
+    
+</div>
+
+{% endblock %}

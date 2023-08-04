@@ -1,0 +1,65 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Your Unsubscribers</title>
+{% endblock %}
+
+{% block content %}
+<script>
+  function resub(form) {
+      return confirm('Are you sure you want to resubscribe this cell number to your messages? If you have deleted this cell number from your audiences, you will also need to seperately go and add it back to your audience.');
+  }
+
+</script>
+
+<div class="container">
+  <h1 class="h3 mb-4 text-gray-800">Unsubscribers</h1>
+  {% include 'accounts/messages_setup.html' %}
+
+    <h4>{{ store.placename }}</h4>
+    <h5>{{ store.address }}</h5>
+    <h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+    <p>Note: You are only able to resubscribe customers, that a staff member has unsubscribed. If a customer unsubscribed for example by texting Stop in reply to a text message, they cannot be resubscribed</p>
+    <div class="text-left mt-3 mb-3">
+      <a class="btn btn-primary d-inline" href="{% url 'unsubscribe_customer' store.id %}">Unsubscribe Additional Customer</a>
+    </div>
+    <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Unsubscribed Cell Number</th>
+          <th scope="col">Unsubscribed On</th>
+          <th scope="col">Unsubscribed By Staff</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for unsub in unsubscribers %}
+        <tr>
+          <td>{{ unsub.unsubscriber_number|slice:"2:5" }}-{{ unsub.unsubscriber_number|slice:"5:8" }}-{{ unsub.unsubscriber_number|slice:"8:12" }}</td>
+          <td>{{ unsub.unsubscribed_on }}</td>
+          {% if unsub.staff_unsubscribed %}
+              <td><i class="fas fa-check"></i></td>
+          {% else %}
+              <td></td>
+          {% endif %}
+          {% if unsub.staff_unsubscribed %}
+            <td>
+                <form onsubmit="return resub(this);" action="{% url 'resubscribe' placepk=store.id %}" enctype="multipart/form-data" method="POST">
+                {% csrf_token %}
+                <input id="resub_id" name="resub_id" type="hidden" value="{{unsub.id}}">
+                <input type="submit" class="btn btn-danger" value="Resubscribe">
+                </form>
+            </td>
+          {% else %}
+              <td></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+
+</div>
+
+{% endblock %}

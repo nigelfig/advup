@@ -1,0 +1,34 @@
+{% extends 'accounts/base_setup.html' %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Select Number</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<form action="." method="post" id="choose-num-form">
+{% csrf_token %}
+<div class="form-row">
+    <button type="submit" class="btn btn-primary btn-lg col-md-2 col-md-offset-5" style="margin-bottom: 20px; margin-top: 20px">Select Number</button>
+</div>
+{% for number in numbers %}
+    {% if forloop.first %}
+    <div class="form-row col-md-2 col-md-offset-5">
+      <label class="radio-inline">
+        <input type="radio" name="phonenum" value="{{number.phone_number}}" checked>{{number.friendly_name}}
+      </label>
+    </div>
+    {% else %}
+    <div class="form-row col-md-2 col-md-offset-5" >
+      <label class="radio-inline">
+        <input type="radio" name="phonenum" value="{{number.phone_number}}" >{{number.friendly_name}}
+      </label>
+    </div>
+    {% endif %}
+{% endfor %}
+    <input type="hidden" name="place_id" id="place_id" value="{{ place.placeid }}"/>
+</form>
+</div>
+
+{% endblock %}

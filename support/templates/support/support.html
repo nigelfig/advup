@@ -1,0 +1,17 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Support</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="h3 mb-4 text-gray-800">Support</h1>
+    <p class="h5 mb-4 text-gray-800">Need Tips and Tricks? Check out: <a href="https://docs.google.com/document/d/1EasD-KDZ8f03YNAmLRLNMeJ3Ry9FWBg8nKpS0NQUaAE/" target="_blank" rel="noopener noreferrer">AdvantageUp Quickstart Guide</a></p>
+    <p class="h5 mb-4 text-gray-800">Questions or Concerns: Call / Text Us at 716-281-9884 or fill out the contact form below to send an email to support@advantageup.com</p>
+<iframe src="https://services.cognitoforms.com/f/L4qbgKUW3kycGcJQ4ADw-w?id=2" style="position:relative;width:1px;min-width:100%;*width:100%;" frameborder="0" scrolling="yes" seamless="seamless" height="555" width="100%"></iframe>
+<script src="https://services.cognitoforms.com/scripts/embed.js"></script>
+
+<script> Cognito.prefill({ "Name": { "First" : "{{profile.first_name}}", "Last": "{{profile.last_name}}" },"Email": "{{request.user.email}}", "Phone": "{{profile.phone_number}}"});</script>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Send Text Message Campaign</title>
+{% endblock %}
+
+{% block custom_css %}
+<style type="text/css" >
+textarea {
+  max-width: 400px;
+  width: 100%;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<script>
+
+function textareaLengthCheck(element) {
+    var textAr = document.getElementById(element);
+    var length = textAr.value.length;
+    var charactersLeft = 148 - length;
+    var countchar = 'countchar' + element
+    var count = document.getElementById(countchar);
+    count.innerHTML = "Characters left: " + charactersLeft;
+    if (charactersLeft <= 0 ) {
+        count.style.color = 'red';
+    } else {
+        count.style.color = 'blue'
+    }
+
+
+}
+
+window.onload = function() {
+    textareaLengthCheck('campaignsms');
+};
+
+</script>
+
+
+<div class="container">
+  <h1 class="h3 mb-4 text-gray-800">Send Text Message Campaign</h1>
+  {% include 'accounts/messages_setup.html' %}
+
+    <h4>{{ store.placename }}</h4>
+    <h5>{{ store.address }}</h5>
+    <h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+    <h6>You currently have <strong>{{store.monthly_sms}}</strong> text messages remaining for your current period. Your monthly text messages update to {{store.monthly_sms_limit}} on day {{update_day}} of the month.</h6>
+    <p>* You can add in a customer's first name and / or last name by entering the following format into the text message:</p>
+    <ul>
+        <li>For first name use *|FNAME|*</li>
+        <li>For last name use *|LNAME|*</li>
+    </ul>
+    <h5>Send Text Message Campaign:</h5>
+    <p>Looking to schedule a text message campaign for a future date: <a href="{% url 'schedule_campaign' store.id %}">click here</a></p>
+    <form action="{% url 'sms-campaign-sender' store.id %}" enctype="multipart/form-data" method="POST" onsubmit="myButton.disabled = true; return true;">
+    {% csrf_token %}
+    <div class="form-group">
+    <label for="youraudiences">Pick Your Audience:</label>
+    <select id="your_audience" name="your_audience" required>
+        <option value=""></option>
+        {% for audience in audiences %}
+        <option value="{{audience.id}}">{{audience.audience_name}}</option>
+        {% endfor %}
+    </select>
+    </div>
+    <div class="form-group">
+    <label for="campaignname">Campaign Name:</label>
+    <input type="text" id="campaignname" name="campaignname" maxlength="50" required>
+    </div>
+    <div class="form-group">
+    <label for="campaignsms">Campaign Text Message:</label>
+    <textarea id="campaignsms" onkeyup="textareaLengthCheck('campaignsms')" maxlength="148" class="form-control textarea" rows="5" name="campaignsms" required></textarea>
+    </div>
+    <p id="countcharcampaignsms">Characters left: </p>
+    <input id="user_storeid" name="user_storeid" type="hidden" value="{{store.id}}">
+    <input name="myButton" type="submit" class="btn btn-primary" value="Send SMS To Customers">
+    </form>
+  <div class="mt-3 mb-3">
+    <p>A user can unsubscribe from your text messages by replying with STOP, STOPALL, UNSUBSCRIBE, CANCEL, END, or QUIT. It is a good idea to end your text message with the following or something similar notifying the user of their ability to unsubscribe: Text STOP to end</p>
+    <p>* For example if you have a customer named John Smith in your audience and you send him the following message:</p>
+    <ul>
+      <li>Hi Mr. *|LNAME|*, I hope you are having a great day *|FNAME|*!</li>
+      <li>John would be sent the following message: Hi Mr. Smith, I hope you are having a great day John!</li>
+    </ul>
+  </div>
+
+
+</div>
+
+{% endblock %}

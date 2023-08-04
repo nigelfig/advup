@@ -1,0 +1,154 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Message Settings</title>
+{% endblock %}
+
+{% block custom_css %}
+<style type="text/css" >
+textarea {
+  max-width: 100%;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/core.css' %}">
+
+<script>
+
+function textareaLengthCheck(element) {
+    var textAr = document.getElementById(element);
+    var length = textAr.value.length;
+    var charactersLeft = 160 - length;
+    var countchar = 'countchar' + element
+    var count = document.getElementById(countchar);
+    count.innerHTML = "Characters left: " + charactersLeft;
+    if (charactersLeft <= 0 ) {
+        count.style.color = 'red';
+    } else {
+        count.style.color = 'blue'
+    }
+
+
+}
+
+window.onload = function() {
+    textareaLengthCheck('reviewsms');
+    textareaLengthCheck('randomsms');
+    textareaLengthCheck('feedreqsms');
+};
+
+</script>
+
+
+<div class="container">
+<h1 class="h3 mb-4 text-gray-800">Message Settings</h1>
+
+    {% include 'accounts/messages_setup.html' %}
+    <h4>{{ store.placename }}</h4>
+    <h5>{{ store.address }}</h5>
+    <h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+    <p class="text-info">Google Review Link: {{google_review_link}}</p>
+    <p class="text-info">Feedback Link: {{feedback_link}}</p>
+    <form action="{% url 'updatereview' store.id %}" enctype="multipart/form-data" method="POST" onsubmit="myButton.disabled = true; return true;">
+    {% csrf_token %}
+    <div class="form-group">
+    <label for="reviewsms">Review Message:</label>
+    <textarea id="reviewsms" onkeyup="textareaLengthCheck('reviewsms')" maxlength="160" class="form-control textarea" rows="5" name="reviewsms" >{{store.messaging.review_copy}}</textarea>
+    </div>
+
+    <p id="countcharreviewsms">Characters left: </p>
+    <div class="form-group">
+    <label for="randomsms">Reply When Customer Sends Random Message:</label>
+    <textarea id="randomsms" onkeyup="textareaLengthCheck('randomsms')" maxlength="160" class="form-control textarea" rows="5" name="randomsms" >{{store.messaging.no_match_reply}}</textarea>
+    </div>
+    <p id="countcharrandomsms">Characters left: </p>
+<!-- Rounded switch -->
+<p>Ask Feedback Question:</p>
+<label class="switch">
+{% if store.messaging.want_feedback == True %} 
+  <input type="checkbox" name="feedbox" id="feedbox"  checked>
+{% else %}
+  <input type="checkbox" name="feedbox" id="feedbox" >
+{% endif %}
+  <span class="slider round"></span>
+</label>
+
+    <div id="feedbackdiv" >
+        <div class="form-group">
+        <label for="feedreqsms">Feedback Request Message:</label>
+        <textarea id="feedreqsms" onkeyup="textareaLengthCheck('feedreqsms')" maxlength="160" class="form-control textarea" rows="5" name="feedreqsms" >{{store.messaging.feedback_copy}}</textarea>
+        </div>
+        <p id="countcharfeedreqsms">Characters left: </p>
+    </div>
+    <p class="text-info">Note: You are limited to 160 characters, which is the max characters that fit in a single text message.</p>
+    <input name="myButton" type="submit" class="btn btn-primary" value="Update">
+    </form>
+
+
+</div>
+{% endblock %}

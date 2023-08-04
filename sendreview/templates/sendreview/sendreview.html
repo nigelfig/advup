@@ -1,0 +1,88 @@
+{% extends my_base %}
+{% block title %}
+<title>AdvantageUp | Send Review</title>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+          
+        <!-- Link Clicks Cards -->
+        <div class="col-xl-2 col-md-3 col-sm-4 mb-4">
+          <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Review Link Clicks (All Time)</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{review_clicks}}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-external-link-square-alt fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Link Clicks Cards -->
+        <div class="col-xl-2 col-md-3 col-sm-4 mb-4">
+          <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Feedback Link Clicks (All Time)</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{feedback_clicks}}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-thumbs-up fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+<h1 class="h3 mb-4 text-gray-800">Send Review & Feedback Request</h1>
+{% include 'accounts/messages_setup.html' %}
+
+<h4>{{ store.placename }}</h4>
+<h5>{{ store.address }}</h5>
+<h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+<form action="{% url 'computer-sms-sender' store.id %}" enctype="multipart/form-data" method="POST" onsubmit="myButton.disabled = true; return true;">
+{% csrf_token %}
+<div class="form-group">
+<label for="Body">Enter Customer Cell Number:</label>
+<input type="tel" name="Body" pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}" required>
+<span>Format: 123-456-7890</span>
+</div>
+<input id="user_storeid" name="user_storeid" type="hidden" value="{{store.id}}">
+<input name="myButton" type="submit" class="btn btn-primary" value="Send SMS To Customer">
+</form>
+<br><br>
+<h4><strong>Last 30 Messages and Replies</strong></h4>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Customer Phone Number</th>
+        <th scope="col">Message Category</th>
+        <th scope="col">Text Message</th>
+        <th scope="col">Send Date</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for stat in stats %}
+      <tr>
+        <td>({{ stat.customer_number|slice:"2:5" }}) {{ stat.customer_number|slice:"5:8" }}-{{ stat.customer_number|slice:"8:12" }}</td>
+        <td>{{ stat.get_message_category_display }}</td>
+        <td>{{stat.message}}</td>
+        <td>{{stat.created_at}}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+
+{% endblock %}

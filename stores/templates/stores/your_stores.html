@@ -1,0 +1,70 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Your Stores</title>
+{% endblock %}
+  <!-- Custom styles for this page -->
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Your Stores</h1>
+
+{% for store in places %}
+<nav class="navbar navbar-expand-xl navbar-dark" style="background-color: #03538b;">
+  <a class="navbar-brand" href="{% url 'dashboard-multi' placepk=store.id %}">{{store.placename}}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+      <li {% if request.resolver_match.view_name == 'dashboard-multi' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+        <a class="nav-link" href="{% url 'dashboard-multi' placepk=store.id %}">Dashboard</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          SMS Chatbot
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a {% if request.resolver_match.view_name == 'sendreview' %}class="dropdown-item active"{% else %}class="dropdown-item"{% endif %} href="{% url 'sendreview' placepk=store.id %}">Send Review & Feedback</a>
+          <a {% if request.resolver_match.view_name == 'custom_sms' %}class="dropdown-item active"{% else %}class="dropdown-item"{% endif %} href="{% url 'custom_sms' placepk=store.id %}">Send Custom SMS</a>
+          <a {% if request.resolver_match.view_name == 'updatereview' %}class="dropdown-item active"{% else %}class="dropdown-item"{% endif %} href="{% url 'updatereview' placepk=store.id %}">Message Settings</a>
+        </div>
+      </li>
+          <li {% if request.resolver_match.view_name == 'send_campaign' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+          <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'send_campaign' placepk=store.id %}">Send Campaign</a>
+          </li>
+          <li {% if request.resolver_match.view_name == 'schedule_campaign' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+          <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'schedule_campaign' placepk=store.id %}">Schedule Campaign</a>
+          </li>
+          <li {% if request.resolver_match.view_name == 'campaigns' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+          <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'campaigns' placepk=store.id %}">Campaigns</a>
+          </li>
+          <li {% if request.resolver_match.view_name == 'links' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+          <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'links' placepk=store.id %}">Links</a>
+          </li>
+          <li {% if request.resolver_match.view_name == 'create-link' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+          <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'create-link' placepk=store.id %}">Shorten Link</a>
+          </li>
+          <li {% if request.resolver_match.view_name == 'audiences' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+          <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'audiences' placepk=store.id %}">Audiences</a>
+          </li>
+          <li {% if request.resolver_match.view_name == 'upload' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+          <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'upload' placepk=store.id %}">Upload Subs</a>
+          </li>
+          <li {% if request.resolver_match.view_name == 'add_subscriber' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+          <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'add_subscriber' placepk=store.id %}">Add Sub</a>
+          </li>
+          <li {% if request.resolver_match.view_name == 'unsubscribers' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+          <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'unsubscribers' placepk=store.id %}">Unsubs</a>
+          </li>
+    </ul>
+
+  </div>
+</nav>
+
+
+  <br/>
+
+  {% endfor %}
+
+{% endblock %}

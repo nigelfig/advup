@@ -1,0 +1,61 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Your Campaigns</title>
+{% endblock %}
+
+{% block content %}
+<script>
+  function cancel_campaign(form) {
+      return confirm('Are you sure you want to cancel and delete this scheduled campaign?');
+  }
+
+</script>
+<div class="container">
+  <h1 class="h3 mb-4 text-gray-800">Your Campaigns</h1>
+  {% include 'accounts/messages_setup.html' %}
+
+    <h4>{{ store.placename }}</h4>
+    <h5>{{ store.address }}</h5>
+    <h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+    <h6>You currently have <strong>{{store.monthly_sms}}</strong> text messages remaining for your current period. Your monthly text messages update to {{store.monthly_sms_limit}} on day {{update_day}} of the month.</h6>
+    <div class="text-left mt-3 mb-3">
+      <a class="btn btn-primary d-inline" href="{% url 'send_campaign' store.id %}">Create New Campaign</a>
+    </div>
+    <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Campaign Name</th>
+          <th scope="col">Campaign SMS</th>
+          <th scope="col">Campaign Status</th>
+          <th scope="col"># of Text Messages Sent</th>
+          <th scope="col"># of Link Clicks</th>
+          <th scope="col">Sent On</th>
+          <th scope="col">Audience</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for campaign, clicks in campaigns %}
+        <tr>
+          <td>{{campaign.campaign_name}}</td>
+          <td>{{campaign.campaign_sms}}</td>
+          <td>{{campaign.get_campaign_status_display}} {% if campaign.campaign_status == "SCHEDULED" %}/ 
+            <form onsubmit="return cancel_campaign(this);" action="{% url 'cancel_scheduled_campaign' placepk=store.id %}" enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <input id="campaign_id" name="campaign_id" type="hidden" value="{{campaign.id}}">
+            <input type="submit" class="btn btn-danger" value="Cancel">
+            </form>
+            {% endif %}</td>
+          <td>{{campaign.successful_sends}}</td>
+          <td>{{clicks}}</td>
+          <td>{{campaign.create_date}}</td>
+          <td><a href="{% url 'subs' placepk=store.id audiencepk=campaign.audience.id %}" >{{campaign.audience.audience_name}}</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+</div>
+
+{% endblock %}

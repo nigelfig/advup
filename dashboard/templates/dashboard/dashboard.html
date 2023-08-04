@@ -1,0 +1,320 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Dashboard</title>
+{% endblock %}
+  <!-- Custom styles for this page -->
+  {% block custom_css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}">
+  {% endblock %}
+{% block content %}
+<div class="container">
+<h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
+<!-- stores to add -->
+{% if remaining_stores_num == 1 %}
+<h2>You still have {{ remaining_stores_num }} store to add.</h2>
+{% elif remaining_stores_num > 1 %}
+<h2>You still have {{ remaining_stores_num }} stores to add.</h2>
+{% endif %}
+{% if remaining_stores_num > 0 %}
+<button class="btn btn-info" onclick="window.location='{% url 'create' %}';">Add Store</button>
+<br><br>
+{% endif %}
+
+{% if incomplete_stores_num == 1 %}    
+<h2>Incomplete Store - Select Phone Number</h2>
+{% elif incomplete_stores_num > 1 %} 
+<h2>Incomplete Stores - Select Phone Number</h2>
+{% endif %}
+{% if incomplete_stores_num > 0 %}   
+{% for istore in incomplete_stores %}
+    <h4>{{ istore.placename }}</h4>
+    <h4>{{ istore.address }}</h4>
+    <button class="btn btn-success" onclick="window.location='{% url 'findphonenums:findnum' istore.id %}';">Select Review Number</button>
+    <br><br>
+{% endfor %}
+{% endif %}
+<!-- end of stores to add -->
+
+{% if places.count > 1 %}
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    View Specific Location
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="{% url 'dashboard' %}">All Locations</a>
+    {% for place in places %}
+    <a class="dropdown-item" href="{% url 'dashboard-multi' place.id %}">{{place.placename}} - {{place.address}}</a>
+    {% endfor %}
+  </div>
+</div>
+<br><br>
+{% endif %}
+
+{% if places.count == 1 %}
+{% for place in places %}
+<h2 class="h5 mb-4 text-gray-800">{{place.placename}} - {{place.address}}</h2>
+<h2 class="h5 mb-4 text-gray-800">Your Programmable Number: {{ place.review_number|slice:"2:5" }}-{{ place.review_number|slice:"5:8" }}-{{ place.review_number|slice:"8:12" }}</h2>
+{% endfor %}
+{% endif %}
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Link Clicks Cards -->
+            <div class="col-xl-2 col-md-3 col-sm-4 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Campaigns Sent (Monthly)</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{monthly_campaigns}}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-bullhorn fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Link Clicks Cards -->
+            <div class="col-xl-2 col-md-3 col-sm-4 mb-4">
+              <div class="card border-left-dark shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">Campaigns SMS (Monthly)</div>
+                      <div id="campsmsmon" class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-comment fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Link Clicks Cards -->
+            <div class="col-xl-2 col-md-3 col-sm-4 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Campaign Link Clicks (Monthly)</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{monthly_campaign_clicks}}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-link fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Requests Card -->
+            <div class="col-xl-2 col-md-3 col-sm-4 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">SMS Requests Sent (Monthly)</div>
+                      <div id="reqmon" class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-mobile fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interactions Card -->
+            <div class="col-xl-2 col-md-3 col-sm-4 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">SMS By Customers (Monthly)</div>
+                        <div id="intermon" class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            <!-- Link Clicks Cards -->
+            <div class="col-xl-2 col-md-3 col-sm-4 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Review Link Clicks (All Time)</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{review_clicks}}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-external-link-square-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Link Clicks Cards -->
+            <div class="col-xl-2 col-md-3 col-sm-4 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Feedback Link Clicks (All Time)</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">{{feedback_clicks}}</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-thumbs-up fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+
+          <!-- Content Row -->
+        <!-- Begin Page Content -->
+        <div>
+          <!-- Content Row -->
+          <div class="row">
+            <div class="col-xl-12 col-lg-7">
+
+              <!-- Campaign SMS Chart -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-dark"># of Campaign SMS Sent</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-area">
+                    <canvas id="CampaignsBarChart"></canvas>
+                  </div>
+                  <hr>
+                  Total SMS sent from your marketing campaigns.
+                </div>
+              </div>
+
+              <!-- Request Chart -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary"># of SMS Review, Feedback, or Custom Requests</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-area">
+                    <canvas id="RequestsBarChart"></canvas>
+                  </div>
+                  <hr>
+                  An SMS Request is an initial SMS message sent to a customer from a staff member.
+                </div>
+              </div>
+
+              <!-- Interactions Chart -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-info"># of SMS Customer Replies</h6>
+                </div>
+                <div class="card-body">
+                  <div class="chart-bar">
+                    <canvas id="InteractionsBarChart"></canvas>
+                  </div>
+                  <hr>
+                  An SMS Reply occurs when a customer replies to an SMS Request or Campaign SMS.
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+        <!-- Begin Page Content -->
+        <div >
+          <!-- DataTales Example -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Your Company's SMS Interactions</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Business Name</th>
+                      <th>Customer Number</th>
+                      <th>Message Category</th>
+                      <th>Message</th>
+                      <th>Send Date</th>
+                      <th>Feedback Flow On</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>Business Name</th>
+                      <th>Customer Number</th>
+                      <th>Message Category</th>
+                      <th>Message</th>
+                      <th>Send Date</th>
+                      <th>Feedback Flow On</th>
+                    </tr>
+                  </tfoot>
+                  <tbody>
+                    {% for stat in stats %}
+                    <tr>
+                      <td>{{ stat.place }}</td>
+                      <td>({{ stat.customer_number|slice:"2:5" }}) {{ stat.customer_number|slice:"5:8" }}-{{ stat.customer_number|slice:"8:12" }}</td>
+                      <td>{{ stat.get_message_category_display }}</td>
+                      <td>{{ stat.message }}</td>
+                      <td>{{ stat.created_at | date:'M j, Y g:i:s A' }}</td>
+                      {% if stat.feedback_on %}
+                      <td class="far fa-check-square"></td>
+                      {% else %}
+                      <td></td>
+                      {% endif %}
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+       
+</div>
+
+
+{% endblock %}
+
+{% block page_script %}
+
+
+
+<!-- Page level plugins -->
+<script type="text/javascript" src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+<!-- Page level custom scripts -->
+<script type="text/javascript" src="{% static 'js/demo/datatables-demo.js' %}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+
+
+  <!-- Page level plugins -->
+  <script type="text/javascript" src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+
+  <!-- Page level custom scripts -->
+  <script type="text/javascript" src="{% static 'js/demo/chart-bar.js' %}"></script>
+{% endblock %}
+

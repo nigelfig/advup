@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdvantageUp | Page Not Found</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}"/>
+    <style>
+        body {
+            background-color: lightgray;
+        }
+        .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        height: 100px;
+        }
+        .text-center {
+            text-align: center;
+            display:block;
+        }
+        p {
+            font-size: 24px;
+        }
+
+        a {
+            font-size: 18px;
+            color: #5c56fd;
+        }
+
+    </style>
+</head>
+<body>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <div>
+        <a href="{% url 'dashboard' %}"><img src="{% static 'img/AdvantageUp-logo.png' %}" alt="AdvantageUp" class="center"></a>
+        <p class="text-center">Page not found, url for it may have changed.</p>
+        <a class="text-center" href="{% url 'dashboard' %}">Back to home</a>
+    </div>
+
+</body>
+</html>

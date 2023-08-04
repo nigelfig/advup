@@ -1,0 +1,46 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Your Stores</title>
+{% endblock %}
+  <!-- Custom styles for this page -->
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Your Stores</h1>
+
+{% for store in places %}
+<nav class="navbar navbar-expand-xl navbar-dark" style="background-color: #03538b;">
+  <a class="navbar-brand" href="{% url 'dashboard-multi' placepk=store.id %}">{{store.placename}}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+      <li {% if request.resolver_match.view_name == 'sendreview' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+        <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'sendreview' placepk=store.id %}">Send Review & Feedback</a>
+      </li>
+      <li {% if request.resolver_match.view_name == 'custom_sms' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+        <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'custom_sms' placepk=store.id %}">Send Custom SMS</a>
+      </li>
+      <li {% if request.resolver_match.view_name == 'updatereview' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+        <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'updatereview' placepk=store.id %}">Message Settings</a>
+      </li>
+        <li {% if request.resolver_match.view_name == 'links' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+        <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'links' placepk=store.id %}">Links</a>
+        </li>
+        <li {% if request.resolver_match.view_name == 'create-link' %}class="nav-item active"{% else %}class="nav-item"{% endif %}>
+        <a class="nav-link btn btn-sm btn-outline-secondary" href="{% url 'create-link' placepk=store.id %}">Shorten Link</a>
+        </li>
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  <br/>
+
+  {% endfor %}
+
+{% endblock %}

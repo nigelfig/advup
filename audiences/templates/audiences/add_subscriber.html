@@ -1,0 +1,45 @@
+{% extends my_base %}
+{% load static %}
+{% block title %}
+<title>AdvantageUp | Add A Subscriber</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1 class="h3 mb-4 text-gray-800">Add A Subscriber</h1>
+  {% include 'accounts/messages_setup.html' %}
+
+    <h4>{{ store.placename }}</h4>
+    <h5>{{ store.address }}</h5>
+    <h6>Your Programmable Number: {{ store.review_number|slice:"2:5" }}-{{ store.review_number|slice:"5:8" }}-{{ store.review_number|slice:"8:12" }}</h6>
+    <h6>You currently have <strong>{{store.monthly_sub_uploads}}</strong> cell phone number checks / uploads remaining for your current period. Your monthly cell phone number checks / uploads update to {{store.monthly_sub_uploads_limit}} on day {{update_day}} of the month.</h6>
+    <form class="user" action="{% url 'add_subscriber' placepk=store.id %}" enctype="multipart/form-data" method="POST" onsubmit="myButton.disabled = true; return true;">
+      {% csrf_token %}
+      <label>Audience</label>
+      <select id="your_audience" name="your_audience" required >
+          <option value=""></option>
+          {% for audience in audiences %}
+          <option value="{{audience.id}}">{{audience.audience_name}}</option>
+          {% endfor %}
+      </select>
+
+        <div class="form-group">
+            <input type="text" name="first_name" maxlength="15" class="form-control form-control-user" id="first_name" placeholder="First Name">
+        </div>
+        <div class="form-group">
+            <input type="text" name="last_name" maxlength="15" class="form-control form-control-user" id="last_name" placeholder="Last Name">
+        </div>
+        <div class="form-group">
+        <label for="phone_num_body">Enter Customer Cell Number:</label>
+        <input type="tel" id="phone_num_body" name="phone_num_body" pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}" required>
+        <span>Format: 123-456-7890</span>
+        </div>
+      <input id="store_ctry" name="store_ctry" type="hidden" value="{{store.country}}">
+      <input name="myButton" type="submit" class="btn btn-primary btn-block" value="Add Subscriber">
+    </form>
+
+</div>
+
+{% endblock %}
+
